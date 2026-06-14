@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Industrial &amp; Product Design</title>
+<!-- Personal site · Takram-inspired: flat, borderless, square, monochrome, whitespace-driven.
+     Home = gallery (name + tag + wireframe → render on hover) → click opens a detail view (#p1..#p8).
+     Brand mark + contact are placeholders. Real name not shown. Client names anonymised. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#ffffff; --ink:#0e0e10; --ink2:#4a4a48; --muted:#8a8a84; --media:#f1f0ec; --line:#b9b8b1;
+    --maxw:1440px; --mx:clamp(24px,6vw,96px);
+    --fs-hero:clamp(38px,6vw,82px);
+    --fs-h3:clamp(27px,3.3vw,44px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:74px}
+  body{font-family:"Inter","Noto Sans SC",system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  .zh{display:none}
+  body.lang-zh .en{display:none}
+  body.lang-zh .zh{display:inline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--mx)}
+
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(10px)}
+  .nav-in{max-width:var(--maxw);margin:0 auto;padding:18px var(--mx);display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .nav-right{display:flex;align-items:center;gap:clamp(16px,2.4vw,34px)}
+  .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+  .mark{width:12px;height:12px;background:var(--ink);display:inline-block}
+  .nav-links{display:flex;align-items:center;gap:clamp(16px,2.4vw,34px)}
+  .nav-links a{text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.01em;opacity:.6;transition:opacity .2s}
+  .nav-links a:hover{opacity:1}
+  .langbtn{font:inherit;font-size:13px;font-weight:600;background:none;border:0;cursor:pointer;letter-spacing:.04em;opacity:.6;transition:opacity .2s}
+  .langbtn:hover{opacity:1}
+  .navtoggle{display:none;background:none;border:0;font-size:21px;cursor:pointer;color:var(--ink)}
+
+  /* hero (head) */
+  .hero{padding:clamp(90px,18vh,200px) 0 clamp(50px,8vh,96px)}
+  .hero h1{font-size:var(--fs-hero);font-weight:500;letter-spacing:-.025em;line-height:1.03;max-width:17ch}
+  .hero p{margin-top:26px;font-size:clamp(16px,1.8vw,20px);font-weight:300;color:var(--ink2);max-width:44ch}
+
+  /* gallery */
+  .gallery{padding:clamp(20px,4vh,40px) 0 clamp(60px,9vh,120px);display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(30px,4vw,60px)}
+  .ghead{grid-column:1/-1;font-size:13px;letter-spacing:.04em;color:var(--muted);font-weight:500;margin-top:clamp(20px,4vh,46px)}
+  .ghead:first-child{margin-top:0}
+  .card{display:block;text-decoration:none;color:inherit}
+  .card-media{position:relative;width:100%;aspect-ratio:4/3;background:#fff;overflow:hidden}
+  .card-wire,.card-render{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .55s cubic-bezier(.2,.7,.2,1)}
+  .card-wire{background:#fff}
+  .card-wire svg{width:54%;max-width:210px;height:auto}
+  .card-wire svg *{fill:none;stroke:#9e9d96;stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .card-render{opacity:0}
+  .card-render img{width:100%;height:100%;object-fit:cover}
+  .card-render.contain img{object-fit:contain}
+  .card:hover .card-render{opacity:1}
+  .card:hover .card-wire{opacity:0}
+  .card:focus-visible .card-render{opacity:1}
+  .card:focus-visible .card-wire{opacity:0}
+  .card-meta{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:16px}
+  .card-nm{font-size:clamp(18px,2vw,23px);font-weight:500;letter-spacing:-.01em}
+  .card-tag{font-size:12.5px;color:var(--muted);text-align:right;white-space:nowrap}
+  @media(hover:none){.card-render{opacity:1}.card-wire{opacity:0}}
+
+  /* detail view */
+  .detail{display:none;padding:clamp(26px,5vh,52px) 0 clamp(60px,10vh,120px)}
+  .detail.active{display:block}
+  .back{display:inline-block;font-size:13px;letter-spacing:.04em;color:var(--muted);text-decoration:none;margin-bottom:clamp(26px,5vh,46px);transition:color .2s}
+  .back:hover{color:var(--ink)}
+  .kick{font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:600}
+  .detail h2{font-size:var(--fs-h3);font-weight:500;letter-spacing:-.012em;line-height:1.04;margin-top:16px}
+  .zhname{font-size:clamp(18px,2.1vw,24px);font-weight:500;color:var(--muted);margin-top:8px}
+  .lead{font-size:clamp(18px,2vw,24px);font-weight:300;color:var(--ink2);margin-top:20px;max-width:44ch}
+  .meta{font-size:13px;letter-spacing:.02em;color:var(--muted);margin-top:18px}
+
+  /* media blocks */
+  .shot{width:100%;overflow:hidden;background:var(--media)}
+  .shot img{width:100%;height:100%;object-fit:cover}
+  .shot.contain img{object-fit:contain}
+  .ar169{aspect-ratio:16/9}.ar43{aspect-ratio:4/3}.ar32{aspect-ratio:3/2}
+  .hero-shot{margin-top:clamp(30px,5vh,56px)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.1vw,16px);margin-top:clamp(12px,1.4vw,16px)}
+  .full{margin-top:clamp(12px,1.4vw,16px)}
+  .shot.ph{display:flex;align-items:center;justify-content:center}
+  .shot.ph span{color:var(--muted);font-size:13px;letter-spacing:.05em;text-align:center;padding:24px;max-width:46ch}
+
+  /* beats */
+  .beats{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,4vw,60px) clamp(48px,6vw,96px);margin-top:clamp(44px,6vh,84px)}
+  .bk{font-size:12px;letter-spacing:.1em;color:var(--ink2);font-weight:600;margin-bottom:10px}
+  .beat p{font-size:16px;font-weight:300;color:var(--ink);line-height:1.62;max-width:48ch}
+  .note{font-size:12.5px;color:var(--muted);margin-top:24px;max-width:60ch}
+  .dnext{margin-top:clamp(48px,7vh,80px);display:flex;justify-content:space-between;gap:16px}
+  .dnext a{font-size:14px;font-weight:500;text-decoration:none;color:var(--ink)}
+  .dnext .alt{color:var(--muted)}
+
+  /* about / contact */
+  #about{padding:clamp(80px,13vh,170px) 0}
+  #about h2{font-size:clamp(26px,3vw,40px);font-weight:500;letter-spacing:-.01em;line-height:1.12;max-width:22ch}
+  #about .body{margin-top:30px;display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(36px,5vw,72px);align-items:start}
+  #about p{font-size:clamp(16px,1.7vw,19px);font-weight:300;color:var(--ink2);max-width:52ch}
+  .caps{list-style:none;font-size:14px}.caps li{padding:10px 0;color:var(--ink2)}.caps li b{font-weight:500;color:var(--ink)}
+  .tools{margin-top:18px;font-size:13px;color:var(--muted)}
+  #contact{padding:clamp(80px,13vh,170px) 0 clamp(64px,9vh,110px)}
+  #contact h2{font-size:clamp(30px,4.4vw,60px);font-weight:500;letter-spacing:-.02em}
+  .clinks{margin-top:32px;display:flex;flex-wrap:wrap;gap:14px 36px}
+  .clinks a,.clinks span{font-size:clamp(16px,1.9vw,21px);text-decoration:none;color:var(--ink)}
+  .clinks a{border-bottom:1px solid rgba(14,14,16,.25);padding-bottom:2px}
+  .clinks a:hover{border-color:var(--ink)}
+  .foot{margin-top:clamp(50px,8vh,90px);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted)}
+
+  /* about — cursor lens: wireframe → render */
+  #about .kick{margin-bottom:14px}
+  .lens{position:relative;width:100%;aspect-ratio:3/2;margin:clamp(30px,5vh,56px) 0 clamp(34px,5vh,60px);overflow:hidden;background:#fff;cursor:none}
+  .lens .render-layer,.lens .wire-layer{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr)}
+  .lens .rcell{overflow:hidden;background:var(--media)}
+  .lens .rcell img{width:100%;height:100%;object-fit:cover;display:block}
+  .lens .wire-layer{background:#fff;-webkit-mask:radial-gradient(circle at var(--x,50%) var(--y,44%),#0000 0 var(--r0,84px),#000 var(--r1,116px));mask:radial-gradient(circle at var(--x,50%) var(--y,44%),#0000 0 var(--r0,84px),#000 var(--r1,116px))}
+  .lens .wcell{display:flex;align-items:center;justify-content:center}
+  .lens .wcell svg{width:52%;max-width:150px;height:auto}
+  .lens .wcell svg *{fill:none;stroke:#b3b2ac;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .lens .lens-ring{position:absolute;left:var(--x,50%);top:var(--y,44%);width:calc(var(--r0,84px)*2);height:calc(var(--r0,84px)*2);transform:translate(-50%,-50%);border:1px solid rgba(14,14,16,.22);border-radius:50%;pointer-events:none}
+  .lens .lens-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:12px;letter-spacing:.04em;color:var(--muted);pointer-events:none;transition:opacity .4s}
+  .lens.touched .lens-hint{opacity:0}
+  @media(max-width:560px){
+    .lens{aspect-ratio:3/4}
+    .lens .render-layer,.lens .wire-layer{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}
+    .lens .wire-layer{-webkit-mask:radial-gradient(circle at var(--x,50%) var(--y,40%),#0000 0 var(--r0,58px),#000 var(--r1,84px));mask:radial-gradient(circle at var(--x,50%) var(--y,40%),#0000 0 var(--r0,58px),#000 var(--r1,84px))}
+    .lens .lens-ring{width:116px;height:116px}
+  }
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.vis{opacity:1;transform:none}
+
+  @media(max-width:760px){
+    .gallery{grid-template-columns:1fr}
+    .beats{grid-template-columns:1fr;gap:30px}
+    .grid3{grid-template-columns:1fr}
+    #about .body{grid-template-columns:1fr;gap:28px}
+    .nav-links{position:fixed;inset:62px 0 auto 0;flex-direction:column;align-items:flex-start;gap:0;background:#fff;padding:6px var(--mx) 18px;transform:translateY(-135%);transition:transform .3s}
+    .nav-links.open{transform:none}
+    .nav-links a{width:100%;padding:13px 0;opacity:.85}
+    .navtoggle{display:block}
+  }
+</style>
+</head>
+<body class="lang-en">
+
+<header class="nav">
+  <div class="nav-in">
+    <a href="#home" class="brand" aria-label="home"><span class="mark"></span></a>
+    <div class="nav-right">
+      <button class="langbtn" id="langbtn"><span class="en">CN</span><span class="zh">EN</span></button>
+      <nav class="nav-links" id="navlinks">
+        <a href="#work"><span class="en">Work</span><span class="zh">作品</span></a>
+        <a href="#about"><span class="en">About</span><span class="zh">关于</span></a>
+        <a href="#contact"><span class="en">Contact</span><span class="zh">联系</span></a>
+      </nav>
+      <button class="navtoggle" id="navtoggle" aria-label="menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== HOME ===================== -->
+<div id="view-home">
+
+  <section id="home" class="hero">
+    <div class="wrap">
+      <h1 class="reveal"><span class="en">I design everyday objects.</span><span class="zh">我设计日常之物。</span></h1>
+      <p class="reveal"><span class="en">Industrial &amp; product designer — from concept and mechanism to CMF and production.</span><span class="zh">工业与产品设计师——从概念、机构,到 CMF 与量产。</span></p>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="gallery">
+
+        <p class="ghead reveal"><span class="en">nusign — in-house, shipped</span><span class="zh">nusign — 实名 · 已落地</span></p>
+
+        <a class="card reveal" href="#p1">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="18" y="41" width="84" height="11" rx="5.5"/><line x1="82" y1="41" x2="82" y2="52"/><rect x="30" y="37.5" width="17" height="3.5" rx="1.5"/></svg></div>
+            <div class="card-render"><img src="assets/scissors-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></span><span class="card-tag"><span class="en">Portable tool</span><span class="zh">便携工具</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p2">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M54 24 q0 -4 6 -4 q6 0 6 4 v40 l-6 11 -6 -11 z"/><line x1="54" y1="36" x2="66" y2="36"/><path d="M66 25 q5 1 5 7 v9"/></svg></div>
+            <div class="card-render"><img src="assets/ballpen-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔</span></span><span class="card-tag"><span class="en">Writing</span><span class="zh">书写</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p3">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="42" y="38" width="36" height="34" rx="6"/><rect x="51" y="26" width="18" height="13" rx="3"/><circle cx="60" cy="56" r="5.5"/></svg></div>
+            <div class="card-render contain"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀</span></span><span class="card-tag"><span class="en">Stationery tool</span><span class="zh">文具工具</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p4">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M42 60 C38 44 54 37 70 41 C83 44 87 53 81 59 L58 67 C48 70 44 67 42 60 Z"/><circle cx="59" cy="51" r="8"/><path d="M42 60 l-7 5"/></svg></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Correction Tape</span><span class="zh">修正带</span></span><span class="card-tag"><span class="en">Reserved</span><span class="zh">预留</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p5">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M30 43 q30 -15 60 0 v21 a6 6 0 0 1 -6 6 h-48 a6 6 0 0 1 -6 -6 z"/><line x1="31" y1="43" x2="89" y2="43"/><rect x="57" y="39" width="5" height="9" rx="1.5"/></svg></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span><span class="card-tag"><span class="en">Placeholder</span><span class="zh">占位</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p6">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="40" y="22" width="40" height="48" rx="2"/><rect x="46" y="29" width="13" height="8" rx="1"/><line x1="46" y1="45" x2="74" y2="45"/><line x1="46" y1="51" x2="70" y2="51"/><rect x="46" y="58" width="6" height="6"/><rect x="55" y="58" width="6" height="6"/><rect x="64" y="58" width="6" height="6"/></svg></div>
+            <div class="card-render"><img src="assets/brand-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">nusign — Brand VI</span><span class="zh">品牌 VI 规范</span></span><span class="card-tag"><span class="en">Brand VI</span><span class="zh">品牌 VI</span></span></div>
+        </a>
+
+        <p class="ghead reveal"><span class="en">Client &amp; concept — brands anonymised</span><span class="zh">甲方与概念 — 品牌已隐去</span></p>
+
+        <a class="card reveal" href="#p7">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -11 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path d="M50 33 q10 -8 20 0"/><rect x="44" y="44" width="32" height="20" rx="2"/><line x1="54" y1="44" x2="54" y2="64"/><line x1="65" y1="44" x2="65" y2="64"/><line x1="44" y1="54" x2="76" y2="54"/></svg></div>
+            <div class="card-render"><img src="assets/pet-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Pet Series</span><span class="zh">宠物系列</span></span><span class="card-tag"><span class="en">Pet · client</span><span class="zh">宠物 · 甲方</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p8">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="32" y="28" width="56" height="42" rx="6"/><circle cx="60" cy="45" r="11"/><circle cx="60" cy="45" r="4"/><rect x="42" y="62" width="36" height="4" rx="2"/></svg></div>
+            <div class="card-render"><img src="assets/printer-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></span><span class="card-tag"><span class="en">Electronics · client</span><span class="zh">消费电子 · 甲方</span></span></div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2 class="reveal"><span class="en">Let's make something.</span><span class="zh">一起做点东西。</span></h2>
+      <div class="clinks reveal">
+        <a href="mailto:your-email@example.com">your-email@example.com</a>
+        <span>Behance</span><span>Instagram</span><span>LinkedIn</span>
+      </div>
+      <div class="foot">
+        <span><span class="en">Replace the mark, email and links before publishing.</span><span class="zh">发布前请替换标记、邮箱与链接。</span></span>
+        <span>© 2026</span>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /home -->
+
+<article class="detail" id="about">
+  <div class="wrap">
+    <a class="back" href="#home">← <span class="en">Back</span><span class="zh">返回</span></a>
+    <p class="kick reveal"><span class="en">About</span><span class="zh">关于</span></p>
+    <h2 class="reveal"><span class="en">I design everyday objects — and sweat the details.</span><span class="zh">我设计日常之物——并且死磕细节。</span></h2>
+
+    <figure class="lens reveal" id="lens">
+      <div class="render-layer">
+        <div class="rcell"><img src="assets/scissors-hero.jpg" alt=""></div>
+        <div class="rcell"><img src="assets/ballpen-hero.jpg" alt=""></div>
+        <div class="rcell"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt=""></div>
+        <div class="rcell"><img src="assets/brand-hero.jpg" alt=""></div>
+        <div class="rcell"><img src="assets/pet-hero.jpg" alt=""></div>
+        <div class="rcell"><img src="assets/printer-hero.jpg" alt=""></div>
+      </div>
+      <div class="wire-layer">
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="18" y="41" width="84" height="11" rx="5.5"/><line x1="82" y1="41" x2="82" y2="52"/><rect x="30" y="37.5" width="17" height="3.5" rx="1.5"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><path d="M54 24 q0 -4 6 -4 q6 0 6 4 v40 l-6 11 -6 -11 z"/><line x1="54" y1="36" x2="66" y2="36"/><path d="M66 25 q5 1 5 7 v9"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="42" y="38" width="36" height="34" rx="6"/><rect x="51" y="26" width="18" height="13" rx="3"/><circle cx="60" cy="56" r="5.5"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="40" y="22" width="40" height="48" rx="2"/><rect x="46" y="29" width="13" height="8" rx="1"/><line x1="46" y1="45" x2="74" y2="45"/><line x1="46" y1="51" x2="70" y2="51"/><rect x="46" y="58" width="6" height="6"/><rect x="55" y="58" width="6" height="6"/><rect x="64" y="58" width="6" height="6"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -11 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path d="M50 33 q10 -8 20 0"/><rect x="44" y="44" width="32" height="20" rx="2"/><line x1="54" y1="44" x2="54" y2="64"/><line x1="65" y1="44" x2="65" y2="64"/><line x1="44" y1="54" x2="76" y2="54"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="32" y="28" width="56" height="42" rx="6"/><circle cx="60" cy="45" r="11"/><circle cx="60" cy="45" r="4"/><rect x="42" y="62" width="36" height="4" rx="2"/></svg></div>
+      </div>
+      <span class="lens-ring" aria-hidden="true"></span>
+      <span class="lens-hint"><span class="en">Move your cursor — wireframe develops into render</span><span class="zh">移动光标 —— 线框显影成渲染</span></span>
+    </figure>
+
+    <div class="body">
+      <p class="reveal"><span class="en">Industrial / product designer working across stationery, lifestyle, pet and consumer-electronics products. I take projects from insight and market analysis through concept, mechanism and CMF, to production-ready renders and ODM collaboration — equally at home with a pencil and with CAD.</span><span class="zh">工业 / 产品设计师,涉猎文具、生活方式、宠物与消费电子产品。我把项目从洞察与市场分析,推进到概念、机构与 CMF,直至可量产渲染与 ODM 协作——拿铅笔与用 CAD 一样自在。</span></p>
+      <div class="reveal">
+        <ul class="caps">
+          <li><b><span class="en">Concept &amp; ideation</span><span class="zh">概念与发想</span></b></li>
+          <li><b><span class="en">Form &amp; CMF</span><span class="zh">造型与 CMF</span></b></li>
+          <li><b><span class="en">Mechanism &amp; structure</span><span class="zh">机构与结构</span></b></li>
+          <li><b><span class="en">CAD, rendering &amp; prototyping</span><span class="zh">建模、渲染与样机</span></b></li>
+          <li><b><span class="en">Design for manufacture · ODM</span><span class="zh">面向量产 · ODM</span></b></li>
+        </ul>
+        <p class="tools"><span class="en">Tools — Rhino · KeyShot · Figma · Illustrator</span><span class="zh">工具 — Rhino · KeyShot · Figma · Illustrator</span></p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- ===================== DETAILS ===================== -->
+
+<article class="detail" id="p1">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">01 · nusign</p>
+    <h2 class="reveal"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></h2>
+    <p class="zhname reveal"><span class="en">便携剪刀</span><span class="zh">Stick Scissors</span></p>
+    <p class="lead reveal"><span class="en">Scissors that vanish into a pen-sized stick.</span><span class="zh">像笔一样收纳的便携剪刀。</span></p>
+    <p class="meta reveal">2024–26 · <span class="en">Portable tool</span><span class="zh">便携工具</span> · Concept→Mechanism→CMF · nusign</p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/scissors-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Slim, safe scissors actually worth carrying every day.</span><span class="zh">日常可随身、又足够安全的纤薄剪刀。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">Blades sheath inside a pen-slim cylinder; twist to deploy and lock.</span><span class="zh">刀刃藏于笔形圆柱,旋转展开并锁定。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Split into body, carrier and lock; A/B tested action and grip.</span><span class="zh">拆为机身、刀刃载体与锁定,A/B 验证开合与握持。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A pocket stick with tactile detent feedback; calm blue with a colour range.</span><span class="zh">带段位手感的口袋剪刀,沉静蓝并延展配色。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/scissors-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/scissors-2.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/scissors-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/scissors-cmf.jpg" alt=""></figure>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p2"><span class="en">Next: Ballpen →</span><span class="zh">下一个:圆珠笔 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p2">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">02 · nusign</p>
+    <h2 class="reveal"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔(直液式 + 按动)</span></h2>
+    <p class="zhname reveal"><span class="en">圆珠笔(直液式 + 按动)</span><span class="zh">Direct-type Ballpen</span></p>
+    <p class="lead reveal"><span class="en">A pen pared back to its essentials — two siblings, one language.</span><span class="zh">回到本质的书写工具——双生一体的视觉语言。</span></p>
+    <p class="meta reveal">2025 · <span class="en">Writing instrument</span><span class="zh">书写工具</span> · Concept→Form→CMF · nusign</p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/ballpen-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Stand out by purity of form and a smoother line.</span><span class="zh">以形的纯粹与更顺滑的书写脱颖而出。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">Near-monolithic body; seamless grip-to-cap; direct-liquid ink.</span><span class="zh">近一体机身,握位到笔帽无缝,直液式供墨。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Two versions share one language — capped direct-type and a retractable click.</span><span class="zh">直液带帽与按动两版,统一视觉语言。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A quiet silhouette across a full colour family.</span><span class="zh">一道安静利落的剪影,完整配色家族。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/ballpen-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/ballpen-2.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/ballpen-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/ballpen-cmf.jpg" alt=""></figure>
+    <p class="note reveal"><span class="en">Retractable (按动) version is a placeholder — will merge in once material arrives.</span><span class="zh">按动版为占位,素材到位后并入本篇。</span></p>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p3"><span class="en">Next: Pencil Sharpener →</span><span class="zh">下一个:削笔刀 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p3">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">03 · nusign</p>
+    <h2 class="reveal"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀 POP-UP</span></h2>
+    <p class="zhname reveal"><span class="en">削笔刀 POP-UP</span><span class="zh">Pop-up Pencil Sharpener</span></p>
+    <p class="lead reveal"><span class="en">A pop-up sharpener — quick, tidy, a little delightful.</span><span class="zh">弹出式削笔——利落、干净,带点小惊喜。</span></p>
+    <p class="meta reveal">2026 · <span class="en">Stationery tool</span><span class="zh">文具工具</span> · Concept→Mechanism→CMF · nusign</p>
+    <figure class="shot ar43 hero-shot contain reveal"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt="Pop-up pencil sharpener"></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Sharpening should feel clean, fast and a little delightful.</span><span class="zh">削笔应当干净、快速,还带点小惊喜。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">A pop-up mechanism springs the sharpener up, ready to use.</span><span class="zh">弹出式机构,一按即弹出待用。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Resolved the pop-up action, blade housing and shavings containment.</span><span class="zh">解决弹出动作、刀仓与碎屑收纳。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A compact, tactile sharpener with a satisfying pop-up motion.</span><span class="zh">小巧、有手感的削笔刀,弹出动作令人愉悦。</span></p></div>
+    </div>
+    <p class="note reveal"><span class="en">Cover pulled from Behance. The full image set is JS-loaded — connect Chrome and I'll bring in the rest; copy above is a draft from the project, refine as you like.</span><span class="zh">封面已从 Behance 取得;其余图为 JS 加载,连上 Chrome 我再补齐。上文为依据项目拟的草稿,可再润色。</span></p>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p6"><span class="en">Next: Brand VI →</span><span class="zh">下一个:品牌 VI →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p4">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">04 · nusign</p>
+    <h2 class="reveal"><span class="en">Correction Tape</span><span class="zh">修正带</span></h2>
+    <p class="zhname reveal"><span class="en">修正带</span><span class="zh">Correction Tape</span></p>
+    <p class="lead reveal"><span class="en">Reserved slot — kept ready for when you want it in.</span><span class="zh">预留空位——随时可填入。</span></p>
+    <p class="meta reveal">— · <span class="en">Stationery</span><span class="zh">文具</span> · — · nusign</p>
+    <figure class="shot ar169 hero-shot ph reveal"><span><span class="en">Reserved empty slot, as requested.</span><span class="zh">按你的要求预留空位。</span></span></figure>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p5"><span class="en">Next: Pencil Case →</span><span class="zh">下一个:笔袋 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p5">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">05 · nusign</p>
+    <h2 class="reveal"><span class="en">Pencil Case</span><span class="zh">笔袋</span></h2>
+    <p class="zhname reveal"><span class="en">笔袋</span><span class="zh">Pencil Case</span></p>
+    <p class="lead reveal"><span class="en">Placeholder — material to be added later.</span><span class="zh">占位——素材稍后补充。</span></p>
+    <p class="meta reveal">— · <span class="en">Stationery / soft goods</span><span class="zh">文具 / 软件</span> · — · nusign</p>
+    <figure class="shot ar169 hero-shot ph reveal"><span><span class="en">Awaiting your material.</span><span class="zh">等待你的素材。</span></span></figure>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p6"><span class="en">Next: Brand VI →</span><span class="zh">下一个:品牌 VI →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p6">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">06 · nusign</p>
+    <h2 class="reveal"><span class="en">nusign — Brand VI</span><span class="zh">nusign 品牌 VI 规范</span></h2>
+    <p class="zhname reveal"><span class="en">nusign 品牌 VI 规范</span><span class="zh">nusign — Brand VI</span></p>
+    <p class="lead reveal"><span class="en">The visual identity system behind the nusign products.</span><span class="zh">支撑 nusign 产品的品牌视觉识别系统。</span></p>
+    <p class="meta reveal">2026 · <span class="en">Brand VI · Identity system</span><span class="zh">品牌 VI · 识别系统</span> · nusign</p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/brand-hero.jpg" alt="nusign logotype"></figure>
+    <figure class="shot ar169 full reveal"><img src="assets/brand-a.jpg" alt="product family"></figure>
+    <figure class="shot ar169 full reveal"><img src="assets/brand-b.jpg" alt="brand applications"></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Logo</span><span class="zh">标志</span></div><p><span class="en">Wordmark, symbol and lockups.</span><span class="zh">字标、符号与组合规范。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Color</span><span class="zh">色彩</span></div><p><span class="en">Brand palette and usage rules.</span><span class="zh">品牌色板与使用规范。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Typography</span><span class="zh">字体</span></div><p><span class="en">Typefaces and hierarchy.</span><span class="zh">字体家族与层级。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Application</span><span class="zh">应用</span></div><p><span class="en">Packaging, print and digital.</span><span class="zh">包装、印刷与数字应用。</span></p></div>
+    </div>
+    <!-- VI uses brand pages 60–62 (hero + family + applications) shown above -->
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p7"><span class="en">Next: Pet Series →</span><span class="zh">下一个:宠物系列 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p7">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">07 · <span class="en">Client · anonymised</span><span class="zh">甲方 · 已隐去</span></p>
+    <h2 class="reveal"><span class="en">Pet Series</span><span class="zh">宠物系列(含外出箱)</span></h2>
+    <p class="zhname reveal"><span class="en">宠物系列(含外出箱)</span><span class="zh">Pet Series</span></p>
+    <p class="lead reveal"><span class="en">Pet gear that disappears into a considered home.</span><span class="zh">融入用心居家的宠物用品系列。</span></p>
+    <p class="meta reveal">2025–26 · <span class="en">Pet lifestyle</span><span class="zh">宠物生活</span> · Research→Structure→CMF · <span class="en">Brand anonymised*</span><span class="zh">品牌已隐去*</span></p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/pet-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Pet travel forces a choice between flimsy soft bags and cage-like crates.</span><span class="zh">带宠出行,只能在软塌布包与笼式硬箱间二选一。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">A calm, coordinated range — carrier, storage and lifestyle.</span><span class="zh">沉静协调的系列——外出箱、收纳与生活用品。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">From market &amp; needs analysis to fold-flat structure, latch safety and CMF.</span><span class="zh">从市场/需求分析到折叠结构、锁扣安全与 CMF。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A breathable, collapsible carrier plus a concept family in light neutrals.</span><span class="zh">可折叠透气外出箱,加浅中性色概念家族。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/pet-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/pet-2.jpg" alt=""></figure>
+      <figure class="shot ar43 contain"><img src="assets/pet-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/pet-cmf.jpg" alt=""></figure>
+    <p class="note reveal">* <span class="en">Brand anonymised at your request.</span><span class="zh">品牌按你的要求已隐去。</span></p>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p8"><span class="en">Next: Photo Printer →</span><span class="zh">下一个:照片打印机 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p8">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">08 · <span class="en">Client · anonymised</span><span class="zh">甲方 · 已隐去</span></p>
+    <h2 class="reveal"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></h2>
+    <p class="zhname reveal"><span class="en">漫画照片打印机</span><span class="zh">Comic Photo Printer</span></p>
+    <p class="lead reveal"><span class="en">Bringing back the joy of holding a photo.</span><span class="zh">让照片重新被握在手心。</span></p>
+    <p class="meta reveal">2025 · <span class="en">Consumer electronics</span><span class="zh">消费电子</span> · Concept→Form→Scenario · <span class="en">Brand anonymised*</span><span class="zh">品牌已隐去*</span></p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/printer-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Our photos live and die on screens — what if one button made a memory physical?</span><span class="zh">照片在屏幕上生灭——若一键即可把回忆变成实物呢?</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">A friendly desktop printer with gentle retro-camera cues.</span><span class="zh">一台亲切的桌面打印机,柔和复古相机意象。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Form directions, output tray, on-device UI and real scenarios.</span><span class="zh">造型方向、出片口、机身交互与真实场景。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A compact home printer — a tap you can hold, frame and give.</span><span class="zh">一台小巧的家用打印机,一点即可握、可裱、可赠。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/printer-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/printer-2.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/printer-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/printer-cmf.jpg" alt=""></figure>
+    <p class="note reveal">* <span class="en">Brand anonymised at your request.</span><span class="zh">品牌按你的要求已隐去。</span></p>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p1"><span class="en">Back to start →</span><span class="zh">回到开头 →</span></a></nav>
+  </div>
+</article>
+
+</main>
+
+<script>
+  var body=document.body, langbtn=document.getElementById('langbtn');
+  langbtn.addEventListener('click',function(){
+    body.classList.toggle('lang-zh');
+    document.documentElement.lang=body.classList.contains('lang-zh')?'zh':'en';
+  });
+  var navtoggle=document.getElementById('navtoggle'), navlinks=document.getElementById('navlinks');
+  navtoggle.addEventListener('click',function(){navlinks.classList.toggle('open');});
+  navlinks.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){navlinks.classList.remove('open');});});
+
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});},{threshold:.12,rootMargin:"0px 0px -8% 0px"});
+  function observe(root){(root||document).querySelectorAll('.reveal:not(.vis)').forEach(function(el){io.observe(el);});}
+  observe();
+
+  var home=document.getElementById('view-home');
+  var details=document.querySelectorAll('.detail');
+  function route(){
+    var h=(location.hash||'').replace('#','');
+    var el=h?document.getElementById(h):null;
+    var isProj=el&&el.classList.contains('detail');
+    details.forEach(function(d){d.classList.remove('active');});
+    if(isProj){
+      home.style.display='none';
+      el.classList.add('active');
+      observe(el);
+      window.scrollTo(0,0);
+    }else{
+      home.style.display='';
+      if(h&&document.getElementById(h)){
+        var t=document.getElementById(h);
+        requestAnimationFrame(function(){t.scrollIntoView({block:'start'});});
+      }else{window.scrollTo(0,0);}
+    }
+  }
+  window.addEventListener('hashchange',route);
+  route();
+
+  // about — cursor lens reveal (drifts on its own when idle / on touch)
+  (function(){
+    var lens=document.getElementById('lens'); if(!lens) return;
+    var raf=null, t=Math.random()*6;
+    function set(x,y){ lens.style.setProperty('--x',x+'px'); lens.style.setProperty('--y',y+'px'); }
+    function drift(){ var r=lens.getBoundingClientRect();
+      if(r.width){ t+=0.010; set(r.width*(0.5+0.33*Math.sin(t)), r.height*(0.5+0.32*Math.sin(t*1.3+1.1))); }
+      raf=requestAnimationFrame(drift); }
+    function stop(){ if(raf){cancelAnimationFrame(raf); raf=null;} }
+    lens.addEventListener('pointermove',function(e){ stop(); var r=lens.getBoundingClientRect(); set(e.clientX-r.left, e.clientY-r.top); lens.classList.add('touched'); });
+    lens.addEventListener('pointerleave',function(){ if(!raf) raf=requestAnimationFrame(drift); });
+    raf=requestAnimationFrame(drift);
+  })();
+</script>
+</body>
+</html>

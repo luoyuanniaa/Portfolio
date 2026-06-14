@@ -19,7 +19,7 @@
     --fs-h3:clamp(27px,3.3vw,44px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:74px}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:74px;scroll-snap-type:y proximity}
   body{font-family:"Inter","Noto Sans SC",system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;overflow-x:hidden}
   img{display:block;max-width:100%}
   a{color:inherit}
@@ -42,7 +42,13 @@
   .navtoggle{display:none;background:none;border:0;font-size:21px;cursor:pointer;color:var(--ink)}
 
   /* hero (head) */
-  .hero{padding:clamp(90px,18vh,200px) 0 clamp(50px,8vh,96px)}
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:0;scroll-snap-align:start;scroll-snap-stop:always}
+  .hero .wrap{width:100%}
+  .scrolldown{position:absolute;left:0;right:0;bottom:clamp(22px,4vh,40px);display:flex;flex-direction:column;align-items:center;gap:12px;text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+  .scrolldown:hover{color:var(--ink)}
+  .scrolldown .ln{width:1px;height:48px;background:rgba(14,14,16,.14);position:relative;overflow:hidden}
+  .scrolldown .ln::after{content:"";position:absolute;left:0;top:0;width:1px;height:50%;background:var(--ink);animation:scrolldot 1.9s cubic-bezier(.5,0,.3,1) infinite}
+  @keyframes scrolldot{0%{transform:translateY(-100%)}65%,100%{transform:translateY(200%)}}
   .hero h1{font-size:var(--fs-hero);font-weight:500;letter-spacing:-.025em;line-height:1.03;max-width:17ch}
   .hero p{margin-top:26px;font-size:clamp(16px,1.8vw,20px);font-weight:300;color:var(--ink2);max-width:44ch}
 
@@ -50,7 +56,7 @@
   .gallery{padding:clamp(20px,4vh,40px) 0 clamp(60px,9vh,120px);display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(30px,4vw,60px)}
   .ghead{grid-column:1/-1;font-size:13px;letter-spacing:.04em;color:var(--muted);font-weight:500;margin-top:clamp(20px,4vh,46px)}
   .ghead:first-child{margin-top:0}
-  .card{display:block;text-decoration:none;color:inherit}
+  .card{display:block;text-decoration:none;color:inherit;scroll-snap-align:center;scroll-snap-stop:always}
   .card-media{position:relative;width:100%;aspect-ratio:4/3;background:#fff;overflow:hidden}
   .card-wire,.card-render{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .55s cubic-bezier(.2,.7,.2,1)}
   .card-wire{background:#fff}
@@ -66,7 +72,8 @@
   .card-meta{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin-top:16px}
   .card-nm{font-size:clamp(18px,2vw,23px);font-weight:500;letter-spacing:-.01em}
   .card-tag{font-size:12.5px;color:var(--muted);text-align:right;white-space:nowrap}
-  @media(hover:none){.card-render{opacity:1}.card-wire{opacity:0}}
+  .card.show-render .card-render{opacity:1}
+  .card.show-render .card-wire{opacity:0}
 
   /* detail view */
   .detail{display:none;padding:clamp(26px,5vh,52px) 0 clamp(60px,10vh,120px)}
@@ -106,7 +113,7 @@
   #about p{font-size:clamp(16px,1.7vw,19px);font-weight:300;color:var(--ink2);max-width:52ch}
   .caps{list-style:none;font-size:14px}.caps li{padding:10px 0;color:var(--ink2)}.caps li b{font-weight:500;color:var(--ink)}
   .tools{margin-top:18px;font-size:13px;color:var(--muted)}
-  #contact{padding:clamp(80px,13vh,170px) 0 clamp(64px,9vh,110px)}
+  #contact{padding:clamp(80px,13vh,170px) 0 clamp(64px,9vh,110px);scroll-snap-align:start}
   #contact h2{font-size:clamp(30px,4.4vw,60px);font-weight:500;letter-spacing:-.02em}
   .clinks{margin-top:32px;display:flex;flex-wrap:wrap;gap:14px 36px}
   .clinks a,.clinks span{font-size:clamp(16px,1.9vw,21px);text-decoration:none;color:var(--ink)}
@@ -175,6 +182,7 @@
       <h1 class="reveal"><span class="en">I design everyday objects.</span><span class="zh">我设计日常之物。</span></h1>
       <p class="reveal"><span class="en">Industrial &amp; product designer — from concept and mechanism to CMF and production.</span><span class="zh">工业与产品设计师——从概念、机构,到 CMF 与量产。</span></p>
     </div>
+    <a class="scrolldown" href="#work" aria-label="scroll to work"><span class="en">Scroll</span><span class="zh">向下滑</span><span class="ln" aria-hidden="true"></span></a>
   </section>
 
   <section id="work">
@@ -498,6 +506,12 @@
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target);}});},{threshold:.12,rootMargin:"0px 0px -8% 0px"});
   function observe(root){(root||document).querySelectorAll('.reveal:not(.vis)').forEach(function(el){io.observe(el);});}
   observe();
+
+  // touch devices have no hover — "develop" each card from wireframe to render as it reaches mid-screen
+  if(!window.matchMedia || window.matchMedia('(hover:none)').matches){
+    var co=new IntersectionObserver(function(es){es.forEach(function(e){ e.target.classList.toggle('show-render', e.isIntersecting); });},{rootMargin:"-35% 0px -35% 0px",threshold:0});
+    document.querySelectorAll('.card').forEach(function(c){ co.observe(c); });
+  }
 
   var home=document.getElementById('view-home');
   var details=document.querySelectorAll('.detail');

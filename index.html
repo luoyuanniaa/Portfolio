@@ -42,7 +42,7 @@
   .navtoggle{display:none;background:none;border:0;font-size:21px;cursor:pointer;color:var(--ink)}
 
   /* hero (head) */
-  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:0;scroll-snap-align:start;scroll-snap-stop:always}
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:0;scroll-snap-align:start}
   .hero .wrap{width:100%}
   .scrolldown{position:absolute;left:0;right:0;bottom:clamp(22px,4vh,40px);display:flex;flex-direction:column;align-items:center;gap:12px;text-decoration:none;color:var(--muted);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
   .scrolldown:hover{color:var(--ink)}
@@ -56,12 +56,14 @@
   .gallery{padding:clamp(20px,4vh,40px) 0 clamp(60px,9vh,120px);display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(30px,4vw,60px)}
   .ghead{grid-column:1/-1;font-size:13px;letter-spacing:.04em;color:var(--muted);font-weight:500;margin-top:clamp(20px,4vh,46px)}
   .ghead:first-child{margin-top:0}
-  .card{display:block;text-decoration:none;color:inherit;scroll-snap-align:center;scroll-snap-stop:always}
+  .card{display:block;text-decoration:none;color:inherit;scroll-snap-align:center}
   .card-media{position:relative;width:100%;aspect-ratio:4/3;background:#fff;overflow:hidden}
   .card-wire,.card-render{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity .55s cubic-bezier(.2,.7,.2,1)}
   .card-wire{background:#fff}
   .card-wire svg{width:54%;max-width:210px;height:auto}
-  .card-wire svg *{fill:none;stroke:#9e9d96;stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .card-wire svg *{fill:#d9d8d2;stroke:none}
+  .card-wire svg .k{fill:#a7a69d}
+  .card-wire img,.lens .wcell img{width:100%;height:100%;object-fit:cover;display:block}
   .card-render{opacity:0}
   .card-render img{width:100%;height:100%;object-fit:cover}
   .card-render.contain img{object-fit:contain}
@@ -74,6 +76,10 @@
   .card-tag{font-size:12.5px;color:var(--muted);text-align:right;white-space:nowrap}
   .card.show-render .card-render{opacity:1}
   .card.show-render .card-wire{opacity:0}
+  @media(hover:none){
+    .card .card-media,.card .card-meta{opacity:.34;transition:opacity .5s ease}
+    .card.show-render .card-media,.card.show-render .card-meta{opacity:1}
+  }
 
   /* detail view */
   .detail{display:none;padding:clamp(26px,5vh,52px) 0 clamp(60px,10vh,120px)}
@@ -130,7 +136,8 @@
   .lens .wire-layer{background:#fff;-webkit-mask:radial-gradient(circle at var(--x,50%) var(--y,44%),#0000 0 var(--r0,84px),#000 var(--r1,116px));mask:radial-gradient(circle at var(--x,50%) var(--y,44%),#0000 0 var(--r0,84px),#000 var(--r1,116px))}
   .lens .wcell{display:flex;align-items:center;justify-content:center}
   .lens .wcell svg{width:52%;max-width:150px;height:auto}
-  .lens .wcell svg *{fill:none;stroke:#b3b2ac;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+  .lens .wcell svg *{fill:#d9d8d2;stroke:none}
+  .lens .wcell svg .k{fill:#a7a69d}
   .lens .lens-ring{position:absolute;left:var(--x,50%);top:var(--y,44%);width:calc(var(--r0,84px)*2);height:calc(var(--r0,84px)*2);transform:translate(-50%,-50%);border:1px solid rgba(14,14,16,.22);border-radius:50%;pointer-events:none}
   .lens .lens-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:12px;letter-spacing:.04em;color:var(--muted);pointer-events:none;transition:opacity .4s}
   .lens.touched .lens-hint{opacity:0}
@@ -193,55 +200,56 @@
 
         <a class="card reveal" href="#p1">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="18" y="41" width="84" height="11" rx="5.5"/><line x1="82" y1="41" x2="82" y2="52"/><rect x="30" y="37.5" width="17" height="3.5" rx="1.5"/></svg></div>
-            <div class="card-render"><img src="assets/scissors-hero.jpg" alt=""></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="16" y="40" width="88" height="12" rx="6"/><rect class="k" x="82" y="40" width="3.5" height="12"/></svg></div>
+            <div class="card-render"><img src="assets/scissors-hero.png" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></span><span class="card-tag"><span class="en">Portable tool</span><span class="zh">便携工具</span></span></div>
         </a>
 
         <a class="card reveal" href="#p2">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M54 24 q0 -4 6 -4 q6 0 6 4 v40 l-6 11 -6 -11 z"/><line x1="54" y1="36" x2="66" y2="36"/><path d="M66 25 q5 1 5 7 v9"/></svg></div>
-            <div class="card-render"><img src="assets/ballpen-hero.jpg" alt=""></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="52" y="15" width="16" height="49" rx="8"/><path class="k" d="M52 62 h16 l-8 15 z"/><rect class="k" x="52" y="33" width="16" height="3"/></svg></div>
+            <div class="card-render"><img src="assets/ballpen-hero.png" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔</span></span><span class="card-tag"><span class="en">Writing</span><span class="zh">书写</span></span></div>
         </a>
 
         <a class="card reveal" href="#p3">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="42" y="38" width="36" height="34" rx="6"/><rect x="51" y="26" width="18" height="13" rx="3"/><circle cx="60" cy="56" r="5.5"/></svg></div>
-            <div class="card-render contain"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt=""></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="50" y="27" width="20" height="14" rx="4"/><rect x="42" y="40" width="36" height="33" rx="6"/><circle class="k" cx="60" cy="57" r="5"/></svg></div>
+            <div class="card-render"><img src="assets/popup-hero.jpg" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀</span></span><span class="card-tag"><span class="en">Stationery tool</span><span class="zh">文具工具</span></span></div>
         </a>
 
         <a class="card reveal" href="#p4">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M42 60 C38 44 54 37 70 41 C83 44 87 53 81 59 L58 67 C48 70 44 67 42 60 Z"/><circle cx="59" cy="51" r="8"/><path d="M42 60 l-7 5"/></svg></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M40 60 C36 42 56 36 72 41 C85 45 88 54 81 60 L58 68 C47 71 42 67 40 60 Z"/><circle class="k" cx="59" cy="51" r="7"/></svg></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Correction Tape</span><span class="zh">修正带</span></span><span class="card-tag"><span class="en">Reserved</span><span class="zh">预留</span></span></div>
         </a>
 
         <a class="card reveal" href="#p5">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M30 43 q30 -15 60 0 v21 a6 6 0 0 1 -6 6 h-48 a6 6 0 0 1 -6 -6 z"/><line x1="31" y1="43" x2="89" y2="43"/><rect x="57" y="39" width="5" height="9" rx="1.5"/></svg></div>
+            <div class="card-wire"><img class="wireimg" src="assets/pencase-wire.png" alt=""></div>
+            <div class="card-render"><img src="assets/pencase-hero.jpg" alt=""></div>
           </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span><span class="card-tag"><span class="en">Placeholder</span><span class="zh">占位</span></span></div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span><span class="card-tag"><span class="en">Stationery</span><span class="zh">文具</span></span></div>
         </a>
 
         <a class="card reveal" href="#p6">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="40" y="22" width="40" height="48" rx="2"/><rect x="46" y="29" width="13" height="8" rx="1"/><line x1="46" y1="45" x2="74" y2="45"/><line x1="46" y1="51" x2="70" y2="51"/><rect x="46" y="58" width="6" height="6"/><rect x="55" y="58" width="6" height="6"/><rect x="64" y="58" width="6" height="6"/></svg></div>
+            <div class="card-wire"><img class="wireimg" src="assets/brand-wire.png" alt=""></div>
             <div class="card-render"><img src="assets/brand-hero.jpg" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">nusign — Brand VI</span><span class="zh">品牌 VI 规范</span></span><span class="card-tag"><span class="en">Brand VI</span><span class="zh">品牌 VI</span></span></div>
         </a>
 
-        <p class="ghead reveal"><span class="en">Client &amp; concept — brands anonymised</span><span class="zh">甲方与概念 — 品牌已隐去</span></p>
+        <p class="ghead reveal"><span class="en">Client &amp; concept</span><span class="zh">甲方与概念</span></p>
 
         <a class="card reveal" href="#p7">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -11 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path d="M50 33 q10 -8 20 0"/><rect x="44" y="44" width="32" height="20" rx="2"/><line x1="54" y1="44" x2="54" y2="64"/><line x1="65" y1="44" x2="65" y2="64"/><line x1="44" y1="54" x2="76" y2="54"/></svg></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -12 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path class="k" d="M49 33 q11 -9 22 0 l0 3.5 q-11 -7.5 -22 0 z"/><rect class="k" x="44" y="45" width="32" height="19" rx="2"/></svg></div>
             <div class="card-render"><img src="assets/pet-hero.jpg" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Pet Series</span><span class="zh">宠物系列</span></span><span class="card-tag"><span class="en">Pet · client</span><span class="zh">宠物 · 甲方</span></span></div>
@@ -249,10 +257,18 @@
 
         <a class="card reveal" href="#p8">
           <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="32" y="28" width="56" height="42" rx="6"/><circle cx="60" cy="45" r="11"/><circle cx="60" cy="45" r="4"/><rect x="42" y="62" width="36" height="4" rx="2"/></svg></div>
+            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="28" y="27" width="64" height="30" rx="2"/><rect class="k" x="28" y="57" width="64" height="3.5"/><rect x="31" y="60" width="58" height="9" rx="2"/><circle class="k" cx="74" cy="42" r="7"/></svg></div>
             <div class="card-render"><img src="assets/printer-hero.jpg" alt=""></div>
           </div>
           <div class="card-meta"><span class="card-nm"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></span><span class="card-tag"><span class="en">Electronics · client</span><span class="zh">消费电子 · 甲方</span></span></div>
+        </a>
+
+        <a class="card reveal" href="#p9">
+          <div class="card-media">
+            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M64 27 a18 18 0 1 0 0 36 l0 -7.5 a10.5 10.5 0 1 1 0 -21 z"/><circle class="k" cx="50" cy="45" r="4.5"/></svg></div>
+            <div class="card-render"><img src="assets/grad-hero.jpg" alt=""></div>
+          </div>
+          <div class="card-meta"><span class="card-nm"><span class="en">Prompt — Graduation</span><span class="zh">毕业设计 · Prompt</span></span><span class="card-tag"><span class="en">GenAI · 3D print</span><span class="zh">生成AI · 3D打印</span></span></div>
         </a>
 
       </div>
@@ -283,20 +299,20 @@
 
     <figure class="lens reveal" id="lens">
       <div class="render-layer">
-        <div class="rcell"><img src="assets/scissors-hero.jpg" alt=""></div>
-        <div class="rcell"><img src="assets/ballpen-hero.jpg" alt=""></div>
-        <div class="rcell"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt=""></div>
+        <div class="rcell"><img src="assets/scissors-hero.png" alt=""></div>
+        <div class="rcell"><img src="assets/ballpen-hero.png" alt=""></div>
+        <div class="rcell"><img src="assets/popup-hero.jpg" alt=""></div>
         <div class="rcell"><img src="assets/brand-hero.jpg" alt=""></div>
         <div class="rcell"><img src="assets/pet-hero.jpg" alt=""></div>
         <div class="rcell"><img src="assets/printer-hero.jpg" alt=""></div>
       </div>
       <div class="wire-layer">
-        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="18" y="41" width="84" height="11" rx="5.5"/><line x1="82" y1="41" x2="82" y2="52"/><rect x="30" y="37.5" width="17" height="3.5" rx="1.5"/></svg></div>
-        <div class="wcell"><svg viewBox="0 0 120 90"><path d="M54 24 q0 -4 6 -4 q6 0 6 4 v40 l-6 11 -6 -11 z"/><line x1="54" y1="36" x2="66" y2="36"/><path d="M66 25 q5 1 5 7 v9"/></svg></div>
-        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="42" y="38" width="36" height="34" rx="6"/><rect x="51" y="26" width="18" height="13" rx="3"/><circle cx="60" cy="56" r="5.5"/></svg></div>
-        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="40" y="22" width="40" height="48" rx="2"/><rect x="46" y="29" width="13" height="8" rx="1"/><line x1="46" y1="45" x2="74" y2="45"/><line x1="46" y1="51" x2="70" y2="51"/><rect x="46" y="58" width="6" height="6"/><rect x="55" y="58" width="6" height="6"/><rect x="64" y="58" width="6" height="6"/></svg></div>
-        <div class="wcell"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -11 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path d="M50 33 q10 -8 20 0"/><rect x="44" y="44" width="32" height="20" rx="2"/><line x1="54" y1="44" x2="54" y2="64"/><line x1="65" y1="44" x2="65" y2="64"/><line x1="44" y1="54" x2="76" y2="54"/></svg></div>
-        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="32" y="28" width="56" height="42" rx="6"/><circle cx="60" cy="45" r="11"/><circle cx="60" cy="45" r="4"/><rect x="42" y="62" width="36" height="4" rx="2"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="16" y="40" width="88" height="12" rx="6"/><rect class="k" x="82" y="40" width="3.5" height="12"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="52" y="15" width="16" height="49" rx="8"/><path class="k" d="M52 62 h16 l-8 15 z"/><rect class="k" x="52" y="33" width="16" height="3"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="50" y="27" width="20" height="14" rx="4"/><rect x="42" y="40" width="36" height="33" rx="6"/><circle class="k" cx="60" cy="57" r="5"/></svg></div>
+        <div class="wcell"><img class="wireimg" src="assets/brand-wire.png" alt=""></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -12 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path class="k" d="M49 33 q11 -9 22 0 l0 3.5 q-11 -7.5 -22 0 z"/><rect class="k" x="44" y="45" width="32" height="19" rx="2"/></svg></div>
+        <div class="wcell"><svg viewBox="0 0 120 90"><rect x="28" y="27" width="64" height="30" rx="2"/><rect class="k" x="28" y="57" width="64" height="3.5"/><rect x="31" y="60" width="58" height="9" rx="2"/><circle class="k" cx="74" cy="42" r="7"/></svg></div>
       </div>
       <span class="lens-ring" aria-hidden="true"></span>
       <span class="lens-hint"><span class="en">Move your cursor — wireframe develops into render</span><span class="zh">移动光标 —— 线框显影成渲染</span></span>
@@ -328,7 +344,7 @@
     <p class="zhname reveal"><span class="en">便携剪刀</span><span class="zh">Stick Scissors</span></p>
     <p class="lead reveal"><span class="en">Scissors that vanish into a pen-sized stick.</span><span class="zh">像笔一样收纳的便携剪刀。</span></p>
     <p class="meta reveal">2024–26 · <span class="en">Portable tool</span><span class="zh">便携工具</span> · Concept→Mechanism→CMF · nusign</p>
-    <figure class="shot ar169 hero-shot reveal"><img src="assets/scissors-hero.jpg" alt=""></figure>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/scissors-hero.png" alt=""></figure>
     <div class="beats">
       <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Slim, safe scissors actually worth carrying every day.</span><span class="zh">日常可随身、又足够安全的纤薄剪刀。</span></p></div>
       <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">Blades sheath inside a pen-slim cylinder; twist to deploy and lock.</span><span class="zh">刀刃藏于笔形圆柱,旋转展开并锁定。</span></p></div>
@@ -353,7 +369,7 @@
     <p class="zhname reveal"><span class="en">圆珠笔(直液式 + 按动)</span><span class="zh">Direct-type Ballpen</span></p>
     <p class="lead reveal"><span class="en">A pen pared back to its essentials — two siblings, one language.</span><span class="zh">回到本质的书写工具——双生一体的视觉语言。</span></p>
     <p class="meta reveal">2025 · <span class="en">Writing instrument</span><span class="zh">书写工具</span> · Concept→Form→CMF · nusign</p>
-    <figure class="shot ar169 hero-shot reveal"><img src="assets/ballpen-hero.jpg" alt=""></figure>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/ballpen-hero.png" alt=""></figure>
     <div class="beats">
       <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Stand out by purity of form and a smoother line.</span><span class="zh">以形的纯粹与更顺滑的书写脱颖而出。</span></p></div>
       <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">Near-monolithic body; seamless grip-to-cap; direct-liquid ink.</span><span class="zh">近一体机身,握位到笔帽无缝,直液式供墨。</span></p></div>
@@ -379,14 +395,14 @@
     <p class="zhname reveal"><span class="en">削笔刀 POP-UP</span><span class="zh">Pop-up Pencil Sharpener</span></p>
     <p class="lead reveal"><span class="en">A pop-up sharpener — quick, tidy, a little delightful.</span><span class="zh">弹出式削笔——利落、干净,带点小惊喜。</span></p>
     <p class="meta reveal">2026 · <span class="en">Stationery tool</span><span class="zh">文具工具</span> · Concept→Mechanism→CMF · nusign</p>
-    <figure class="shot ar43 hero-shot contain reveal"><img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b7215d247545997.69ddb7d994a6d.png" alt="Pop-up pencil sharpener"></figure>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/popup-hero.jpg" alt="Pop-up pencil sharpener"></figure>
     <div class="beats">
       <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Sharpening should feel clean, fast and a little delightful.</span><span class="zh">削笔应当干净、快速,还带点小惊喜。</span></p></div>
       <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">A pop-up mechanism springs the sharpener up, ready to use.</span><span class="zh">弹出式机构,一按即弹出待用。</span></p></div>
       <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Resolved the pop-up action, blade housing and shavings containment.</span><span class="zh">解决弹出动作、刀仓与碎屑收纳。</span></p></div>
       <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A compact, tactile sharpener with a satisfying pop-up motion.</span><span class="zh">小巧、有手感的削笔刀,弹出动作令人愉悦。</span></p></div>
     </div>
-    <p class="note reveal"><span class="en">Cover pulled from Behance. The full image set is JS-loaded — connect Chrome and I'll bring in the rest; copy above is a draft from the project, refine as you like.</span><span class="zh">封面已从 Behance 取得;其余图为 JS 加载,连上 Chrome 我再补齐。上文为依据项目拟的草稿,可再润色。</span></p>
+    <p class="note reveal"><span class="en">More images to come — copy above is a draft, refine anytime.</span><span class="zh">更多图稍后补充;上文为草稿,可随时润色。</span></p>
     <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p6"><span class="en">Next: Brand VI →</span><span class="zh">下一个:品牌 VI →</span></a></nav>
   </div>
 </article>
@@ -410,9 +426,10 @@
     <p class="kick reveal">05 · nusign</p>
     <h2 class="reveal"><span class="en">Pencil Case</span><span class="zh">笔袋</span></h2>
     <p class="zhname reveal"><span class="en">笔袋</span><span class="zh">Pencil Case</span></p>
-    <p class="lead reveal"><span class="en">Placeholder — material to be added later.</span><span class="zh">占位——素材稍后补充。</span></p>
-    <p class="meta reveal">— · <span class="en">Stationery / soft goods</span><span class="zh">文具 / 软件</span> · — · nusign</p>
-    <figure class="shot ar169 hero-shot ph reveal"><span><span class="en">Awaiting your material.</span><span class="zh">等待你的素材。</span></span></figure>
+    <p class="lead reveal"><span class="en">A slim, see-through zip case for the everyday writing kit.</span><span class="zh">轻薄、半透明的拉链笔袋,收纳日常书写工具。</span></p>
+    <p class="meta reveal">— · <span class="en">Stationery / soft goods</span><span class="zh">文具 / 软质</span> · — · nusign</p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/pencase-hero.jpg" alt=""></figure>
+    <p class="note reveal"><span class="en">Full write-up to come.</span><span class="zh">详细文案稍后补充。</span></p>
     <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p6"><span class="en">Next: Brand VI →</span><span class="zh">下一个:品牌 VI →</span></a></nav>
   </div>
 </article>
@@ -487,6 +504,32 @@
     </div>
     <figure class="shot ar169 full reveal"><img src="assets/printer-cmf.jpg" alt=""></figure>
     <p class="note reveal">* <span class="en">Brand anonymised at your request.</span><span class="zh">品牌按你的要求已隐去。</span></p>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p9"><span class="en">Graduation Project →</span><span class="zh">毕业设计 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p9">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">09 · <span class="en">Graduation</span><span class="zh">毕业设计</span></p>
+    <h2 class="reveal"><span class="en">Prompt — Thinking from the “Clip”</span><span class="zh">Prompt —— 从「夹子」开始思考</span></h2>
+    <p class="zhname reveal"><span class="en">毕业设计 · GenAI × 3D printing</span><span class="zh">Graduation Project · 生成AI × 3D 打印</span></p>
+    <p class="lead reveal"><span class="en">Rethinking the humble clip through generative AI and 3D printing.</span><span class="zh">用生成式 AI 与 3D 打印,重新思考「夹子」这一日常之物。</span></p>
+    <p class="meta reveal">2023 · <span class="en">Graduation project</span><span class="zh">毕业设计</span> · GenAI × 3D printing · <span class="en">Academic</span><span class="zh">学术</span></p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/grad-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">AI and 3D printing are reshaping how products come to be. The project asks what design becomes when generative tools enter the everyday.</span><span class="zh">AI 与 3D 打印正在改变产品被创造的方式;课题追问:当生成式工具进入日常,设计会变成什么。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">Take the humble “clip” as a lens — simple and universal — and move from unconscious gesture to conscious form.</span><span class="zh">以最朴素的「夹子」为切口——简单而通用——从无意识的手势,推进到有意识的形。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Generate a family of clip forms with generative AI, then prototype them rapidly as 3D-printed colour samples.</span><span class="zh">用生成式 AI 衍生出一整组夹子造型,再以 3D 打印彩色样件快速验证。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A collection of clip-objects — and a method, “Prompt” — shown at the degree exhibition.</span><span class="zh">一组夹子物件,加上一套方法「Prompt」,在毕业展完整呈现。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/grad-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/grad-2.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/grad-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/grad-show.jpg" alt=""></figure>
+    <p class="note reveal"><span class="en">Draft written from your exhibition panels — send corrections or your full thesis text and I'll update.</span><span class="zh">以上依据你毕业展展板所拟草稿——把修改意见或毕设正文发我即可更新。</span></p>
     <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p1"><span class="en">Back to start →</span><span class="zh">回到开头 →</span></a></nav>
   </div>
 </article>

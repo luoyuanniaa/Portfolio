@@ -19,7 +19,7 @@
     --fs-h3:clamp(27px,3.3vw,44px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:74px;scroll-snap-type:y proximity}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:0;scroll-snap-type:y mandatory}
   body{font-family:"Inter","Noto Sans SC",system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;overflow-x:hidden}
   img{display:block;max-width:100%}
   a{color:inherit}
@@ -29,7 +29,8 @@
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--mx)}
 
   /* nav */
-  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(10px)}
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(10px);transition:transform .35s ease}
+  header.nav.hide{transform:translateY(-100%)}
   .nav-in{max-width:var(--maxw);margin:0 auto;padding:18px var(--mx);display:flex;align-items:center;justify-content:space-between;gap:16px}
   .nav-right{display:flex;align-items:center;gap:clamp(16px,2.4vw,34px)}
   .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
@@ -49,6 +50,21 @@
   .scrolldown .ln{width:1px;height:48px;background:rgba(14,14,16,.14);position:relative;overflow:hidden}
   .scrolldown .ln::after{content:"";position:absolute;left:0;top:0;width:1px;height:50%;background:var(--ink);animation:scrolldot 1.9s cubic-bezier(.5,0,.3,1) infinite}
   @keyframes scrolldot{0%{transform:translateY(-100%)}65%,100%{transform:translateY(200%)}}
+
+  /* floating project index (right) — dot track */
+  .sideindex{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:9px;padding:10px 6px;border-radius:999px;transition:background .3s ease,box-shadow .3s ease}
+  .sideindex:hover{background:rgba(245,244,240,.94);backdrop-filter:saturate(180%) blur(8px);box-shadow:0 0 0 1px rgba(14,14,16,.08),0 14px 34px -14px rgba(0,0,0,.28)}
+  .sideindex a{position:relative;display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .si-num{width:6px;height:6px;border-radius:3px;background:#c9c8c2;font-size:0;flex:none;transition:background .25s ease,height .25s ease}
+  .sideindex a:hover .si-num{background:#9c9b92}
+  .sideindex a.active .si-num{height:14px;background:#8d8c84}
+  .si-name{position:absolute;right:calc(100% + 13px);top:50%;transform:translateY(-50%) translateX(6px);white-space:nowrap;font-size:12px;font-weight:500;color:var(--ink2);background:rgba(255,255,255,.85);backdrop-filter:blur(4px);padding:4px 10px;border-radius:999px;box-shadow:0 6px 18px -10px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease}
+  .sideindex a:hover .si-name{opacity:1;transform:translateY(-50%) translateX(0)}
+  .si-top{margin-top:9px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:#9c9b92;opacity:0;pointer-events:none;transition:color .2s ease,opacity .3s ease}
+  .si-top svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .si-top.show{opacity:1;pointer-events:auto}
+  .si-top:hover{color:var(--ink)}
+  @media (hover:none),(max-width:820px){ .sideindex{display:none} }
   .hero h1{font-size:var(--fs-hero);font-weight:500;letter-spacing:-.025em;line-height:1.03;max-width:17ch}
   .hero p{margin-top:26px;font-size:clamp(16px,1.8vw,20px);font-weight:300;color:var(--ink2);max-width:44ch}
 
@@ -64,6 +80,39 @@
   .card-wire svg *{fill:#d9d8d2;stroke:none}
   .card-wire svg .k{fill:#a7a69d}
   .card-wire img,.lens .wcell img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* full-screen project deck */
+  .works{padding:0}
+  .ppanel{position:relative;display:block;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;text-decoration:none;color:var(--ink);background:var(--paper)}
+  .pp-media{position:absolute;inset:0;background:var(--paper)}
+  .pp-media img{width:100%;height:100%;object-fit:cover;display:block}
+  .pp-render{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .6s ease}
+  .pp-wire{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;background:var(--paper);transition:opacity .5s ease}
+  .pp-wire svg{width:26%;max-width:300px;height:auto}
+  .pp-wire svg *{fill:#d9d8d2;stroke:none}
+  .pp-wire svg .k{fill:#a7a69d}
+  .pp-media video.motion{position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s ease}
+  .pp-media video.motion.show{opacity:1}
+  .pp-reserved{display:flex;align-items:center;justify-content:center;background:var(--media)}
+  .pp-empty{color:var(--muted);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+  .ppanel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to top,rgba(255,255,255,.72),rgba(255,255,255,0));z-index:2;pointer-events:none;opacity:0;transition:opacity .5s ease}
+  .ppanel.is-hover::after{opacity:1}
+  .pp-cap{position:absolute;z-index:3;left:var(--mx);right:var(--mx);bottom:clamp(40px,8vh,96px);display:flex;flex-direction:column;gap:9px;max-width:48ch;opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+  .ppanel.is-hover .pp-wire{opacity:0}
+  .ppanel.is-hover .pp-render{opacity:1}
+  .ppanel.is-hover .pp-cap{opacity:1;transform:none}
+  .pp-kick{display:none}
+  .pp-name{font-size:clamp(21px,3.2vw,40px);font-weight:500;letter-spacing:-.015em;line-height:1.05}
+  .pp-tag{font-size:14px;color:var(--ink2)}
+  .pp-view{margin-top:10px;font-size:14px;font-weight:500;color:var(--ink);border-bottom:1px solid currentColor;align-self:flex-start;padding-bottom:2px;opacity:.8}
+  @media (hover:none),(max-width:820px){
+    .ppanel{display:flex;flex-direction:column;justify-content:center;padding:96px var(--mx) 80px}
+    .pp-media{position:relative;inset:auto;width:100%;aspect-ratio:16/9;background:var(--media)}
+    .pp-wire{display:none}
+    .pp-render{opacity:1}
+    .ppanel::after{display:none}
+    .pp-cap{position:static;opacity:1;transform:none;left:auto;right:auto;bottom:auto;margin-top:22px;max-width:none}
+  }
   .card-render{opacity:0}
   .card-render img{width:100%;height:100%;object-fit:cover}
   .card-render.contain img{object-fit:contain}
@@ -82,7 +131,7 @@
   }
 
   /* detail view */
-  .detail{display:none;padding:clamp(26px,5vh,52px) 0 clamp(60px,10vh,120px)}
+  .detail{display:none;padding:clamp(90px,12vh,120px) 0 clamp(60px,10vh,120px)}
   .detail.active{display:block}
   .back{display:inline-block;font-size:13px;letter-spacing:.04em;color:var(--muted);text-decoration:none;margin-bottom:clamp(26px,5vh,46px);transition:color .2s}
   .back:hover{color:var(--ink)}
@@ -119,7 +168,7 @@
   #about p{font-size:clamp(16px,1.7vw,19px);font-weight:300;color:var(--ink2);max-width:52ch}
   .caps{list-style:none;font-size:14px}.caps li{padding:10px 0;color:var(--ink2)}.caps li b{font-weight:500;color:var(--ink)}
   .tools{margin-top:18px;font-size:13px;color:var(--muted)}
-  #contact{padding:clamp(80px,13vh,170px) 0 clamp(64px,9vh,110px);scroll-snap-align:start}
+  #contact{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:clamp(80px,13vh,170px) 0 clamp(64px,9vh,110px);scroll-snap-align:start}
   #contact h2{font-size:clamp(30px,4.4vw,60px);font-weight:500;letter-spacing:-.02em}
   .clinks{margin-top:32px;display:flex;flex-wrap:wrap;gap:14px 36px}
   .clinks a,.clinks span{font-size:clamp(16px,1.9vw,21px);text-decoration:none;color:var(--ink)}
@@ -184,6 +233,20 @@
 <!-- ===================== HOME ===================== -->
 <div id="view-home">
 
+  <nav class="sideindex" aria-label="project index">
+    <a href="#work1"><span class="si-name"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></span><span class="si-num">01</span></a>
+    <a href="#work2"><span class="si-name"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔</span></span><span class="si-num">02</span></a>
+    <a href="#work3"><span class="si-name"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀</span></span><span class="si-num">03</span></a>
+    <a href="#work4"><span class="si-name"><span class="en">Correction Tape</span><span class="zh">修正带</span></span><span class="si-num">04</span></a>
+    <a href="#work5"><span class="si-name"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span><span class="si-num">05</span></a>
+    <a href="#work6"><span class="si-name"><span class="en">nusign — Brand VI</span><span class="zh">品牌 VI</span></span><span class="si-num">06</span></a>
+    <a href="#work7"><span class="si-name"><span class="en">Pet Series</span><span class="zh">宠物系列</span></span><span class="si-num">07</span></a>
+    <a href="#work8"><span class="si-name"><span class="en">Folio — Folder Board</span><span class="zh">Folio 文件夹板</span></span><span class="si-num">08</span></a>
+    <a href="#work9"><span class="si-name"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></span><span class="si-num">09</span></a>
+    <a href="#work10"><span class="si-name"><span class="en">Prompt — Graduation</span><span class="zh">毕业设计</span></span><span class="si-num">10</span></a>
+    <a href="#home" class="si-top" aria-label="back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6"/></svg></a>
+  </nav>
+
   <section id="home" class="hero">
     <div class="wrap">
       <h1 class="reveal"><span class="en">I design everyday objects.</span><span class="zh">我设计日常之物。</span></h1>
@@ -192,87 +255,108 @@
     <a class="scrolldown" href="#work" aria-label="scroll to work"><span class="en">Scroll</span><span class="zh">向下滑</span><span class="ln" aria-hidden="true"></span></a>
   </section>
 
-  <section id="work">
-    <div class="wrap">
-      <div class="gallery">
+  <section id="work" class="works">
 
-        <p class="ghead reveal"><span class="en">nusign — in-house, shipped</span><span class="zh">nusign — 实名 · 已落地</span></p>
-
-        <a class="card reveal" href="#p1">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="16" y="40" width="88" height="12" rx="6"/><rect class="k" x="82" y="40" width="3.5" height="12"/></svg></div>
-            <div class="card-render"><img src="assets/scissors-hero.png" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></span><span class="card-tag"><span class="en">Portable tool</span><span class="zh">便携工具</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p2">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="52" y="15" width="16" height="49" rx="8"/><path class="k" d="M52 62 h16 l-8 15 z"/><rect class="k" x="52" y="33" width="16" height="3"/></svg></div>
-            <div class="card-render"><img src="assets/ballpen-hero.png" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔</span></span><span class="card-tag"><span class="en">Writing</span><span class="zh">书写</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p3">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="50" y="27" width="20" height="14" rx="4"/><rect x="42" y="40" width="36" height="33" rx="6"/><circle class="k" cx="60" cy="57" r="5"/></svg></div>
-            <div class="card-render"><img src="assets/popup-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀</span></span><span class="card-tag"><span class="en">Stationery tool</span><span class="zh">文具工具</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p4">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M40 60 C36 42 56 36 72 41 C85 45 88 54 81 60 L58 68 C47 71 42 67 40 60 Z"/><circle class="k" cx="59" cy="51" r="7"/></svg></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Correction Tape</span><span class="zh">修正带</span></span><span class="card-tag"><span class="en">Reserved</span><span class="zh">预留</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p5">
-          <div class="card-media">
-            <div class="card-wire"><img class="wireimg" src="assets/pencase-wire.png" alt=""></div>
-            <div class="card-render"><img src="assets/pencase-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span><span class="card-tag"><span class="en">Stationery</span><span class="zh">文具</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p6">
-          <div class="card-media">
-            <div class="card-wire"><img class="wireimg" src="assets/brand-wire.png" alt=""></div>
-            <div class="card-render"><img src="assets/brand-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">nusign — Brand VI</span><span class="zh">品牌 VI 规范</span></span><span class="card-tag"><span class="en">Brand VI</span><span class="zh">品牌 VI</span></span></div>
-        </a>
-
-        <p class="ghead reveal"><span class="en">Client &amp; concept</span><span class="zh">甲方与概念</span></p>
-
-        <a class="card reveal" href="#p7">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -12 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path class="k" d="M49 33 q11 -9 22 0 l0 3.5 q-11 -7.5 -22 0 z"/><rect class="k" x="44" y="45" width="32" height="19" rx="2"/></svg></div>
-            <div class="card-render"><img src="assets/pet-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Pet Series</span><span class="zh">宠物系列</span></span><span class="card-tag"><span class="en">Pet · client</span><span class="zh">宠物 · 甲方</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p8">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><rect x="28" y="27" width="64" height="30" rx="2"/><rect class="k" x="28" y="57" width="64" height="3.5"/><rect x="31" y="60" width="58" height="9" rx="2"/><circle class="k" cx="74" cy="42" r="7"/></svg></div>
-            <div class="card-render"><img src="assets/printer-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></span><span class="card-tag"><span class="en">Electronics · client</span><span class="zh">消费电子 · 甲方</span></span></div>
-        </a>
-
-        <a class="card reveal" href="#p9">
-          <div class="card-media">
-            <div class="card-wire"><svg viewBox="0 0 120 90"><path d="M64 27 a18 18 0 1 0 0 36 l0 -7.5 a10.5 10.5 0 1 1 0 -21 z"/><circle class="k" cx="50" cy="45" r="4.5"/></svg></div>
-            <div class="card-render"><img src="assets/grad-hero.jpg" alt=""></div>
-          </div>
-          <div class="card-meta"><span class="card-nm"><span class="en">Prompt — Graduation</span><span class="zh">毕业设计 · Prompt</span></span><span class="card-tag"><span class="en">GenAI · 3D print</span><span class="zh">生成AI · 3D打印</span></span></div>
-        </a>
-
+    <a class="ppanel" id="work1" href="#p1">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/scissors-hero.png" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><rect x="16" y="40" width="88" height="12" rx="6"/><rect class="k" x="82" y="40" width="3.5" height="12"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">01 · nusign</span>
+        <span class="pp-name"><span class="en">Stick Scissors</span><span class="zh">便携剪刀</span></span>
+        <span class="pp-tag"><span class="en">Portable tool</span><span class="zh">便携工具</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
       </div>
-    </div>
+    </a>
+
+    <a class="ppanel" id="work2" href="#p2">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/ballpen-hero.png" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><rect x="52" y="15" width="16" height="49" rx="8"/><path class="k" d="M52 62 h16 l-8 15 z"/><rect class="k" x="52" y="33" width="16" height="3"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">02 · nusign</span>
+        <span class="pp-name"><span class="en">Direct-type Ballpen</span><span class="zh">圆珠笔(直液式 + 按动)</span></span>
+        <span class="pp-tag"><span class="en">Writing</span><span class="zh">书写</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work3" href="#p3">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/popup-hero.jpg" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><rect x="50" y="27" width="20" height="14" rx="4"/><rect x="42" y="40" width="36" height="33" rx="6"/><circle class="k" cx="60" cy="57" r="5"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">03 · nusign</span>
+        <span class="pp-name"><span class="en">Pop-up Pencil Sharpener</span><span class="zh">削笔刀 POP-UP</span></span>
+        <span class="pp-tag"><span class="en">Stationery tool</span><span class="zh">文具工具</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work4" href="#p4">
+      <div class="pp-media empty"><div class="pp-render pp-reserved"><span class="pp-empty"><span class="en">Reserved slot</span><span class="zh">预留空位</span></span></div><div class="pp-wire"><svg viewBox="0 0 120 90"><path d="M40 60 C36 42 56 36 72 41 C85 45 88 54 81 60 L58 68 C47 71 42 67 40 60 Z"/><circle class="k" cx="59" cy="51" r="7"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">04 · nusign</span>
+        <span class="pp-name"><span class="en">Correction Tape</span><span class="zh">修正带</span></span>
+        <span class="pp-tag"><span class="en">Stationery · reserved</span><span class="zh">文具 · 预留</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work5" href="#p5">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/pencase-hero.jpg" alt=""><div class="pp-wire"><img class="wireimg" src="assets/pencase-wire.png" alt=""></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">05 · nusign</span>
+        <span class="pp-name"><span class="en">Pencil Case</span><span class="zh">笔袋</span></span>
+        <span class="pp-tag"><span class="en">Stationery</span><span class="zh">文具</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work6" href="#p6">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/brand-hero.jpg" alt=""><div class="pp-wire"><img class="wireimg" src="assets/brand-wire.png" alt=""></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">06 · nusign</span>
+        <span class="pp-name"><span class="en">nusign — Brand VI</span><span class="zh">品牌 VI 规范</span></span>
+        <span class="pp-tag"><span class="en">Brand VI</span><span class="zh">品牌 VI</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work7" href="#p7">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/pet-hero.jpg" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><path d="M32 38 q28 -12 56 0 v26 a4 4 0 0 1 -4 4 h-48 a4 4 0 0 1 -4 -4 z"/><path class="k" d="M49 33 q11 -9 22 0 l0 3.5 q-11 -7.5 -22 0 z"/><rect class="k" x="44" y="45" width="32" height="19" rx="2"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">07 · <span class="en">Client</span><span class="zh">甲方</span></span>
+        <span class="pp-name"><span class="en">Pet Series</span><span class="zh">宠物系列</span></span>
+        <span class="pp-tag"><span class="en">Pet · client</span><span class="zh">宠物 · 甲方</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work8" href="#p8">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/notebook-hero.jpg" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><rect x="41" y="20" width="38" height="50" rx="3"/><rect class="k" x="47" y="20" width="3" height="50"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">08 · <span class="en">Concept</span><span class="zh">概念</span></span>
+        <span class="pp-name"><span class="en">Folio — Folder Board</span><span class="zh">Folio 文件夹板</span></span>
+        <span class="pp-tag"><span class="en">Office / stationery</span><span class="zh">办公 / 文具</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work9" href="#p9">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/printer-hero.jpg" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><rect x="28" y="27" width="64" height="30" rx="2"/><rect class="k" x="28" y="57" width="64" height="3.5"/><rect x="31" y="60" width="58" height="9" rx="2"/><circle class="k" cx="74" cy="42" r="7"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">09 · <span class="en">Client</span><span class="zh">甲方</span></span>
+        <span class="pp-name"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></span>
+        <span class="pp-tag"><span class="en">Electronics · client</span><span class="zh">消费电子 · 甲方</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
+    <a class="ppanel" id="work10" href="#p10">
+      <div class="pp-media" data-motion=""><img class="pp-render" src="assets/grad-hero.jpg" alt=""><div class="pp-wire"><svg viewBox="0 0 120 90"><path d="M64 27 a18 18 0 1 0 0 36 l0 -7.5 a10.5 10.5 0 1 1 0 -21 z"/><circle class="k" cx="50" cy="45" r="4.5"/></svg></div></div>
+      <div class="pp-cap">
+        <span class="pp-kick">10 · <span class="en">Graduation</span><span class="zh">毕业设计</span></span>
+        <span class="pp-name"><span class="en">Prompt — Graduation</span><span class="zh">毕业设计 · Prompt</span></span>
+        <span class="pp-tag"><span class="en">GenAI · 3D print</span><span class="zh">生成AI · 3D 打印</span></span>
+        <span class="pp-view"><span class="en">View project</span><span class="zh">查看项目</span> →</span>
+      </div>
+    </a>
+
   </section>
 
   <section id="contact">
@@ -403,7 +487,7 @@
       <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A compact, tactile sharpener with a satisfying pop-up motion.</span><span class="zh">小巧、有手感的削笔刀,弹出动作令人愉悦。</span></p></div>
     </div>
     <p class="note reveal"><span class="en">More images to come — copy above is a draft, refine anytime.</span><span class="zh">更多图稍后补充;上文为草稿,可随时润色。</span></p>
-    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p6"><span class="en">Next: Brand VI →</span><span class="zh">下一个:品牌 VI →</span></a></nav>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p4"><span class="en">Next: Correction Tape →</span><span class="zh">下一个:修正带 →</span></a></nav>
   </div>
 </article>
 
@@ -478,14 +562,39 @@
     </div>
     <figure class="shot ar169 full reveal"><img src="assets/pet-cmf.jpg" alt=""></figure>
     <p class="note reveal">* <span class="en">Brand anonymised at your request.</span><span class="zh">品牌按你的要求已隐去。</span></p>
-    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p8"><span class="en">Next: Photo Printer →</span><span class="zh">下一个:照片打印机 →</span></a></nav>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p8"><span class="en">Next: Folio →</span><span class="zh">下一个:Folio →</span></a></nav>
   </div>
 </article>
 
 <article class="detail" id="p8">
   <div class="wrap">
     <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
-    <p class="kick reveal">08 · <span class="en">Client · anonymised</span><span class="zh">甲方 · 已隐去</span></p>
+    <p class="kick reveal">08 · <span class="en">Concept</span><span class="zh">概念</span></p>
+    <h2 class="reveal"><span class="en">Folio — Folder Board</span><span class="zh">Folio 文件夹板</span></h2>
+    <p class="zhname reveal"><span class="en">Folio 文件夹板</span><span class="zh">Folio — Folder Board</span></p>
+    <p class="lead reveal"><span class="en">A premium A4 folder board for the paper-and-screen office.</span><span class="zh">为「纸电协作」而生的高级 A4 文件夹板。</span></p>
+    <p class="meta reveal">2026 · <span class="en">Office / stationery</span><span class="zh">办公 / 文具</span> · Research→Form→CMF · <span class="en">Concept</span><span class="zh">概念</span></p>
+    <figure class="shot ar169 hero-shot reveal"><img src="assets/notebook-hero.jpg" alt=""></figure>
+    <div class="beats">
+      <div class="beat reveal"><div class="bk"><span class="en">Context</span><span class="zh">背景</span></div><p><span class="en">Even in a digital office, paper still wins for deep reading, face-to-face notes and formal filing — yet people lug bulky bags just to keep a few A4 sheets uncreased.</span><span class="zh">数字化办公里,纸张在深度阅读、面对面记录与正式归档上仍不可替代——可人们为护几张 A4,只能背上笨重的包。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Concept</span><span class="zh">概念</span></div><p><span class="en">A slim, premium folder board that protects and presents A4 — sized between an iPad and an A4 pad.</span><span class="zh">一块轻薄、高级的文件夹板,既保护又体面地承载 A4——尺寸介于 iPad 与 A4 之间。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Development</span><span class="zh">推进</span></div><p><span class="en">Resolved the board structure, the notepad and paper hold, and the closure — in a soft-touch leather CMF.</span><span class="zh">解决夹板结构、便签与夹纸固定、开合方式——采用柔触皮革 CMF。</span></p></div>
+      <div class="beat reveal"><div class="bk"><span class="en">Outcome</span><span class="zh">成果</span></div><p><span class="en">A folder that makes carrying a few sheets feel considered — calm tan, layered build.</span><span class="zh">让「只带几张纸」也显得讲究——沉静棕色、分层结构。</span></p></div>
+    </div>
+    <div class="grid3 reveal">
+      <figure class="shot ar43"><img src="assets/notebook-1.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/notebook-2.jpg" alt=""></figure>
+      <figure class="shot ar43"><img src="assets/notebook-3.jpg" alt=""></figure>
+    </div>
+    <figure class="shot ar169 full reveal"><img src="assets/notebook-cmf.jpg" alt=""></figure>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p9"><span class="en">Next: Photo Printer →</span><span class="zh">下一个:照片打印机 →</span></a></nav>
+  </div>
+</article>
+
+<article class="detail" id="p9">
+  <div class="wrap">
+    <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
+    <p class="kick reveal">09 · <span class="en">Client · anonymised</span><span class="zh">甲方 · 已隐去</span></p>
     <h2 class="reveal"><span class="en">Comic Photo Printer</span><span class="zh">漫画照片打印机</span></h2>
     <p class="zhname reveal"><span class="en">漫画照片打印机</span><span class="zh">Comic Photo Printer</span></p>
     <p class="lead reveal"><span class="en">Bringing back the joy of holding a photo.</span><span class="zh">让照片重新被握在手心。</span></p>
@@ -504,14 +613,14 @@
     </div>
     <figure class="shot ar169 full reveal"><img src="assets/printer-cmf.jpg" alt=""></figure>
     <p class="note reveal">* <span class="en">Brand anonymised at your request.</span><span class="zh">品牌按你的要求已隐去。</span></p>
-    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p9"><span class="en">Graduation Project →</span><span class="zh">毕业设计 →</span></a></nav>
+    <nav class="dnext"><a href="#work">← <span class="en">All work</span><span class="zh">全部作品</span></a><a class="alt" href="#p10"><span class="en">Graduation Project →</span><span class="zh">毕业设计 →</span></a></nav>
   </div>
 </article>
 
-<article class="detail" id="p9">
+<article class="detail" id="p10">
   <div class="wrap">
     <a class="back" href="#work">← <span class="en">Work</span><span class="zh">作品</span></a>
-    <p class="kick reveal">09 · <span class="en">Graduation</span><span class="zh">毕业设计</span></p>
+    <p class="kick reveal">10 · <span class="en">Graduation</span><span class="zh">毕业设计</span></p>
     <h2 class="reveal"><span class="en">Prompt — Thinking from the “Clip”</span><span class="zh">Prompt —— 从「夹子」开始思考</span></h2>
     <p class="zhname reveal"><span class="en">毕业设计 · GenAI × 3D printing</span><span class="zh">Graduation Project · 生成AI × 3D 打印</span></p>
     <p class="lead reveal"><span class="en">Rethinking the humble clip through generative AI and 3D printing.</span><span class="zh">用生成式 AI 与 3D 打印,重新思考「夹子」这一日常之物。</span></p>
@@ -576,6 +685,46 @@
       }else{window.scrollTo(0,0);}
     }
   }
+  // full-screen deck (desktop): hover plays the motion graphic, then settles to the render; caption fades in
+  var canHover = !window.matchMedia || window.matchMedia('(hover:hover)').matches;
+  if(canHover){
+    document.querySelectorAll('.ppanel').forEach(function(p){
+      var media=p.querySelector('.pp-media');
+      p.addEventListener('mouseenter',function(){
+        p.classList.add('is-hover');
+        var src=media&&media.getAttribute('data-motion'); if(!src) return;
+        var v=media.querySelector('video.motion');
+        if(!v){ v=document.createElement('video'); v.className='motion'; v.muted=true; v.playsInline=true; v.setAttribute('playsinline',''); v.preload='auto'; v.src=src;
+          v.addEventListener('ended',function(){v.classList.remove('show');});
+          v.addEventListener('error',function(){if(v.parentNode)v.parentNode.removeChild(v);});
+          media.appendChild(v); }
+        v.classList.add('show'); try{v.currentTime=0;}catch(_){ } v.play().catch(function(){});
+      });
+      p.addEventListener('mouseleave',function(){
+        p.classList.remove('is-hover');
+        var v=media&&media.querySelector('video.motion'); if(v){ v.classList.remove('show'); try{v.pause();}catch(_){ } }
+      });
+    });
+  }
+
+  // hide the top bar on scroll-down (show on scroll-up / near top); reveal back-to-top once scrolled
+  (function(){
+    var nav=document.querySelector('header.nav'), topBtn=document.querySelector('.si-top'), lastY=window.scrollY||0;
+    window.addEventListener('scroll',function(){
+      var y=window.scrollY||document.documentElement.scrollTop||0;
+      if(y>80 && y>lastY+2){ nav.classList.add('hide'); }
+      else if(y<lastY-2 || y<=80){ nav.classList.remove('hide'); }
+      if(topBtn){ topBtn.classList.toggle('show', y>window.innerHeight*0.6); }
+      lastY=y;
+    },{passive:true});
+  })();
+
+  // side index — highlight the project currently in view
+  var siMap={};
+  document.querySelectorAll('.sideindex a').forEach(function(a){ siMap[a.getAttribute('href').slice(1)]=a; });
+  var sspy=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ for(var k in siMap){siMap[k].classList.remove('active');} var t=siMap[e.target.id]; if(t)t.classList.add('active'); } });},{rootMargin:"-45% 0px -50% 0px"});
+  document.querySelectorAll('.ppanel').forEach(function(p){ sspy.observe(p); });
+
   window.addEventListener('hashchange',route);
   route();
 
